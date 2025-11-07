@@ -1,0 +1,31 @@
+# gemini_explainer/explainer.py
+import os
+import requests
+from dotenv import load_dotenv
+
+load_dotenv()  # Solo carga si existe .env
+
+def explain_error(error_message: str, api_key: str = None) -> str:
+    key = api_key or os.getenv("GEMINI_API_KEY")
+    if not key:
+        raise RuntimeError(
+            "No se proporcionó api_key ni se encontró GEMINI_API_KEY en el entorno"
+        )
+
+    prompt = f"Explica este error de forma clara y breve: '{error_message}'"
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key={key}"
+
+    payload = {
+        "contents": [
+            {
+                "parts": [{"text": prompt}]
+            }
+        ]
+    }
+
+    try:
+        response = requests.post(url, json=payload)
+        response.raise_for_status()
+        return response.json()["candidates"][0]["content"]["parts"][0]["text"]
+    except Exception as e:
+        raise RuntimeError(f"Error al consultar Gemini: {e}")
