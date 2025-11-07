@@ -1,0 +1,7 @@
+Metadata-Version: 2.1
+Name: ai_response_error
+Version: 0.1.0
+Summary: Explica errores usando Gemini AI
+Requires-Python: >=3.7
+Requires-Dist: requests
+Requires-Dist: google-genai>=0.3
